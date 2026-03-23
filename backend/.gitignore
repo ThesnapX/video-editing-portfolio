@@ -1,0 +1,94 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Uploads and media
+uploads/
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+*.sublime-workspace
+*.sublime-project
+
+# Build files
+dist/
+build/
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Optional: Keep the uploads folder structure but not the files
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.gif
+uploads/*.webp
+uploads/*.mp4
+uploads/*.mov
+
+# Temporary files
+tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+
+# MongoDB files
+dump/
+mongodump/
+
+# Certificate files
+*.pem
+*.crt
+*.key
+
+# Debug files
+debug.log
+
+# Testing
+test-results/
+
+# PM2
+.pm2/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
