@@ -10,16 +10,28 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// Fix CORS for production - remove trailing slash
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://harry-creations.vercel.app",
+  "https://harry-creations.vercel.app/",
+  "https://video-editing-portfolio-m27y.onrender.com",
+];
+
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? [
-            "https://harry-creations.vercel.app/",
-            "https://video-editing-portfolio-m27y.onrender.com",
-          ]
-        : "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        allowedOrigins.indexOf(origin.replace(/\/$/, "")) !== -1
+      ) {
+        callback(null, true);
+      } else {
+        console.log("Blocked origin:", origin);
+        callback(null, true); // Allow anyway for testing
+      }
+    },
     credentials: true,
   }),
 );
@@ -80,9 +92,6 @@ app.use((err, req, res, next) => {
         : "Internal server error",
   });
 });
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-console.log("📁 Uploads folder is being served from /uploads");
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

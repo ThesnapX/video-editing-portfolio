@@ -9,34 +9,60 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TestimonialsPreview = () => {
   const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("/api/testimonials")
-      .then((res) => {
-        setTestimonials(res.data.slice(0, 3));
-      })
-      .catch((err) => console.error("Error fetching testimonials:", err));
-
-    gsap.utils.toArray(".testimonial-card").forEach((card, i) => {
-      gsap.fromTo(
-        card,
-        { opacity: 0, y: 50, scale: 0.95 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.6,
-          delay: i * 0.1,
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
-    });
+    fetchTestimonials();
   }, []);
+
+  const fetchTestimonials = async () => {
+    try {
+      const res = await axios.get("/api/testimonials");
+      setTestimonials(Array.isArray(res.data) ? res.data.slice(0, 3) : []);
+    } catch (err) {
+      console.error("Error fetching testimonials:", err);
+      setTestimonials([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (testimonials.length > 0) {
+      gsap.utils.toArray(".testimonial-card").forEach((card, i) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 50, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            delay: i * 0.1,
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      });
+    }
+  }, [testimonials]);
+
+  if (loading) {
+    return (
+      <section className="py-32 relative">
+        <div className="container mx-auto px-6 text-center">
+          <div className="text-primary text-xl">Loading testimonials...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!testimonials || testimonials.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-32 relative overflow-hidden">
@@ -58,7 +84,6 @@ const TestimonialsPreview = () => {
           {testimonials.map((testimonial) => (
             <div key={testimonial._id} className="testimonial-card group">
               <div className="glass rounded-2xl p-8 hover:border-primary/30 transition-all duration-500 h-full flex flex-col">
-                {/* Quote Icon */}
                 <div className="mb-6">
                   <svg
                     className="w-12 h-12 text-primary/40"
@@ -68,17 +93,13 @@ const TestimonialsPreview = () => {
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                   </svg>
                 </div>
-
-                {/* Message */}
                 <p className="text-gray-300 leading-relaxed mb-6 flex-grow">
                   "{testimonial.message}"
                 </p>
-
-                {/* Client Info */}
                 <div className="flex items-center gap-4 pt-4 border-t border-white/10">
                   <div className="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-lg">
-                    {testimonial.firstName[0]}
-                    {testimonial.lastName[0]}
+                    {testimonial.firstName?.[0]}
+                    {testimonial.lastName?.[0]}
                   </div>
                   <div>
                     <h4 className="font-bold text-lg">

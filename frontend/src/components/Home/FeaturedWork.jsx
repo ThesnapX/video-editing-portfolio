@@ -12,14 +12,23 @@ const FeaturedWork = () => {
   const [works, setWorks] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("/api/work")
-      .then((res) => {
-        setWorks(res.data.slice(0, 3));
-      })
-      .catch((err) => console.error("Error fetching works:", err));
+    fetchWorks();
+  }, []);
+
+  const fetchWorks = async () => {
+    try {
+      const res = await axios.get("/api/work");
+      // Ensure works is always an array
+      setWorks(Array.isArray(res.data) ? res.data.slice(0, 3) : []);
+    } catch (err) {
+      console.error("Error fetching works:", err);
+      setWorks([]);
+    } finally {
+      setLoading(false);
+    }
 
     gsap.utils.toArray(".featured-card").forEach((card, i) => {
       gsap.fromTo(
@@ -38,12 +47,26 @@ const FeaturedWork = () => {
         },
       );
     });
-  }, []);
+  };
 
   const handleVideoClick = (work) => {
     setSelectedVideo(work);
     setModalOpen(true);
   };
+
+  if (loading) {
+    return (
+      <section className="py-32">
+        <div className="container mx-auto px-6 text-center">
+          <div className="text-primary text-xl">Loading featured work...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!works || works.length === 0) {
+    return null;
+  }
 
   return (
     <>
@@ -59,7 +82,7 @@ const FeaturedWork = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {works.map((work, index) => (
+            {works.map((work) => (
               <div
                 key={work._id}
                 className="featured-card group cursor-pointer"

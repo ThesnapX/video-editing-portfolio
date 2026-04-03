@@ -18,31 +18,37 @@ const ServicesGrid = () => {
   const fetchServices = async () => {
     try {
       const res = await axios.get("/api/services");
-      setServices(res.data.slice(0, 3));
+      // Ensure services is always an array
+      setServices(Array.isArray(res.data) ? res.data.slice(0, 3) : []);
     } catch (err) {
       console.error("Error fetching services:", err);
+      setServices([]);
     } finally {
       setLoading(false);
     }
-
-    gsap.utils.toArray(".service-card").forEach((card, i) => {
-      gsap.fromTo(
-        card,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          delay: i * 0.1,
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
-    });
   };
+
+  useEffect(() => {
+    if (services.length > 0) {
+      gsap.utils.toArray(".service-card").forEach((card, i) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: i * 0.1,
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      });
+    }
+  }, [services]);
 
   if (loading) {
     return (
@@ -52,6 +58,10 @@ const ServicesGrid = () => {
         </div>
       </section>
     );
+  }
+
+  if (!services || services.length === 0) {
+    return null;
   }
 
   return (
@@ -77,7 +87,7 @@ const ServicesGrid = () => {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 </div>
-                <div className="p-8">
+                <div className="p-6">
                   <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition">
                     {service.title}
                   </h3>
@@ -95,12 +105,6 @@ const ServicesGrid = () => {
             </div>
           ))}
         </div>
-
-        {services.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-400">No services available yet.</p>
-          </div>
-        )}
 
         <div className="text-center mt-12">
           <Link
