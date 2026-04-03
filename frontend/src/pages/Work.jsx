@@ -14,7 +14,8 @@ const Work = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
+  const [categories, setCategories] = useState(["all"]);
 
   useEffect(() => {
     fetchWorks();
@@ -27,18 +28,35 @@ const Work = () => {
 
   const fetchWorks = async () => {
     try {
-      const res = await axios.get("/api/work");
-      setWorks(res.data);
-      setFilteredWorks(res.data);
+      setLoading(true);
+      setError(null);
+
+      const API_URL = import.meta.env.VITE_API_URL || "/api";
+      const response = await axios.get(`${API_URL}/work`);
+
+      console.log("Work API response:", response.data);
+
+      let worksData = [];
+      if (response.data && Array.isArray(response.data)) {
+        worksData = response.data;
+      } else if (response.data && typeof response.data === "object") {
+        worksData = response.data.data || [];
+      }
+
+      setWorks(worksData);
+      setFilteredWorks(worksData);
 
       // Extract unique categories
       const uniqueCategories = [
         "all",
-        ...new Set(res.data.map((work) => work.categories || []).flat()),
+        ...new Set(worksData.flatMap((work) => work.categories || [])),
       ];
       setCategories(uniqueCategories);
     } catch (err) {
       console.error("Error fetching works:", err);
+      setError(err.message || "Failed to load works");
+      setWorks([]);
+      setFilteredWorks([]);
     } finally {
       setLoading(false);
     }
@@ -64,7 +82,24 @@ const Work = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-primary text-xl">Loading...</div>
+        <div className="text-primary text-xl">Loading work...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">Error loading work</div>
+          <p className="text-gray-400 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 gradient-bg text-white rounded-lg"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
@@ -111,22 +146,22 @@ const Work = () => {
 
       {/* Works Grid */}
       <div className="container mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredWorks.map((work, index) => (
-            <VideoCard
-              key={work._id}
-              work={work}
-              onClick={() => handleVideoClick(work)}
-              index={index}
-            />
-          ))}
-        </div>
-
-        {filteredWorks.length === 0 && (
+        {filteredWorks.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400 text-lg">
               No videos found in this category.
             </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredWorks.map((work, index) => (
+              <VideoCard
+                key={work._id || index}
+                work={work}
+                onClick={() => handleVideoClick(work)}
+                index={index}
+              />
+            ))}
           </div>
         )}
       </div>

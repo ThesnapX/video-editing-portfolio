@@ -8,16 +8,10 @@ gsap.registerPlugin(ScrollTrigger);
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("/api/testimonials")
-      .then((res) => {
-        setTestimonials(res.data);
-      })
-      .catch((err) => console.error("Error fetching testimonials:", err))
-      .finally(() => setLoading(false));
-
+    fetchTestimonials();
     gsap.fromTo(
       ".testimonials-header",
       { opacity: 0, y: 30 },
@@ -25,10 +19,55 @@ const Testimonials = () => {
     );
   }, []);
 
+  const fetchTestimonials = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const API_URL = import.meta.env.VITE_API_URL || "/api";
+      const response = await axios.get(`${API_URL}/testimonials`);
+
+      console.log("Testimonials API response:", response.data);
+
+      if (response.data && Array.isArray(response.data)) {
+        setTestimonials(response.data);
+      } else if (response.data && typeof response.data === "object") {
+        setTestimonials(response.data.data || []);
+      } else {
+        setTestimonials([]);
+      }
+    } catch (err) {
+      console.error("Error fetching testimonials:", err);
+      setError(err.message || "Failed to load testimonials");
+      setTestimonials([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-primary text-xl">Loading...</div>
+        <div className="text-primary text-xl">Loading testimonials...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">
+            Error loading testimonials
+          </div>
+          <p className="text-gray-400 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 gradient-bg text-white rounded-lg"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
@@ -54,64 +93,64 @@ const Testimonials = () => {
 
       {/* Testimonials Grid */}
       <div className="container mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={testimonial._id}
-              className="group opacity-0 animate-fadeInUp"
-              style={{
-                animationDelay: `${index * 0.1}s`,
-                animationFillMode: "forwards",
-              }}
-            >
-              <div className="glass rounded-2xl p-8 hover:border-primary/30 transition-all duration-500 h-full">
-                {/* Quote Icon */}
-                <div className="mb-6">
-                  <svg
-                    className="w-14 h-14 text-primary/30"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                  </svg>
-                </div>
-
-                {/* Message */}
-                <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                  "{testimonial.message}"
-                </p>
-
-                {/* Divider */}
-                <div className="w-20 h-0.5 gradient-bg mb-6"></div>
-
-                {/* Client Info */}
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-xl">
-                    {testimonial.firstName[0]}
-                    {testimonial.lastName[0]}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-xl">
-                      {testimonial.firstName} {testimonial.lastName}
-                    </h3>
-                    <p className="text-gray-400">{testimonial.profession}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {testimonials.length === 0 && (
+        {testimonials.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400 text-lg">
               No testimonials yet. Check back soon!
             </p>
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={testimonial._id || index}
+                className="group opacity-0 animate-fadeInUp"
+                style={{
+                  animationDelay: `${index * 0.1}s`,
+                  animationFillMode: "forwards",
+                }}
+              >
+                <div className="glass rounded-2xl p-8 hover:border-primary/30 transition-all duration-500 h-full">
+                  {/* Quote Icon */}
+                  <div className="mb-6">
+                    <svg
+                      className="w-14 h-14 text-primary/30"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                    </svg>
+                  </div>
+
+                  {/* Message */}
+                  <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                    "{testimonial.message}"
+                  </p>
+
+                  {/* Divider */}
+                  <div className="w-20 h-0.5 gradient-bg mb-6"></div>
+
+                  {/* Client Info */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-xl">
+                      {testimonial.firstName?.[0]}
+                      {testimonial.lastName?.[0]}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-xl">
+                        {testimonial.firstName} {testimonial.lastName}
+                      </h3>
+                      <p className="text-gray-400">{testimonial.profession}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;
