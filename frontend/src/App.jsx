@@ -10,6 +10,7 @@ import Contact from "./pages/Contact";
 import ServiceDetail from "./pages/ServiceDetail";
 import AdminLogin from "./components/Admin/Login";
 import AdminLayout from "./components/Admin/AdminLayout";
+import StructuredData from "./components/SEO/StructuredData";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             element={
               <>
                 <Navbar />
+                <StructuredData />
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/services" element={<Services />} />

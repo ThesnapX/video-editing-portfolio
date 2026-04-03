@@ -16,8 +16,8 @@ app.use(
     origin:
       process.env.NODE_ENV === "production"
         ? [
-            "https://your-frontend-url.vercel.app",
-            "https://your-backend-url.onrender.com",
+            "https://harry-creations.vercel.app/",
+            "https://video-editing-portfolio-m27y.onrender.com",
           ]
         : "http://localhost:5173",
     credentials: true,

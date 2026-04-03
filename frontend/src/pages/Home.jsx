@@ -7,6 +7,7 @@ import TestimonialsPreview from "../components/Home/TestimonialsPreview";
 import CTA from "../components/Home/CTA";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import HelmetSEO from "../components/SEO/HelmetSEO";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,14 +35,21 @@ const Home = () => {
   }, []);
 
   return (
-    <main>
-      <Hero />
-      <FeaturedWork />
-      <AboutMe />
-      <ServicesGrid />
-      <TestimonialsPreview />
-      <CTA />
-    </main>
+    <>
+      <HelmetSEO
+        title="Home"
+        description="Professional video editing services by Harry Creations. Transform your ideas into stunning visual stories with expert video editing, motion graphics, and post-production."
+        url="https://harry-creations.vercel.app"
+      />
+      <main>
+        <Hero />
+        <FeaturedWork />
+        <AboutMe />
+        <ServicesGrid />
+        <TestimonialsPreview />
+        <CTA />
+      </main>
+    </>
   );
 };
 

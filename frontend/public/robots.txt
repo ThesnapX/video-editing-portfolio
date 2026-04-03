@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://harry-creations.vercel.app/sitemap.xml
