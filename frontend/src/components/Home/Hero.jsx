@@ -1,13 +1,28 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import axios from "axios";
+import VideoModal from "../Work/VideoModal";
+import { FiPlay } from "react-icons/fi";
 
 const Hero = () => {
   const heroRef = useRef(null);
   const textRef = useRef(null);
   const glowRef = useRef(null);
+  const [featuredVideo, setFeaturedVideo] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
+    // Fetch a featured video for hero section
+    axios
+      .get("/api/work")
+      .then((res) => {
+        if (res.data.length > 0) {
+          setFeaturedVideo(res.data[0]);
+        }
+      })
+      .catch((err) => console.error("Error fetching featured video:", err));
+
     const tl = gsap.timeline();
 
     tl.fromTo(
@@ -59,53 +74,81 @@ const Hero = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  const handlePlayVideo = () => {
+    if (featuredVideo) {
+      setModalOpen(true);
+    }
+  };
+
   return (
-    <section
-      ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-    >
-      {/* Background Glow Effect */}
-      <div
-        ref={glowRef}
-        className="glow-effect absolute w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px]"
-        style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-      ></div>
+    <>
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        {/* Background Glow Effect */}
+        <div
+          ref={glowRef}
+          className="glow-effect absolute w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px]"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        ></div>
 
-      <div className="container mx-auto px-6 text-center relative z-10">
-        <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
-          <span className="text-white">Crafting Visual</span>
-          <br />
-          <span className="text-primary glow-text">Masterpieces</span>
-        </h1>
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
+            <span className="text-white">Crafting Visual</span>
+            <br />
+            <span className="text-primary glow-text">Masterpieces</span>
+          </h1>
 
-        <p className="hero-subtitle text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
-          Professional video editing that brings your stories to life. Cinematic
-          quality, creative storytelling, and unparalleled attention to detail.
-        </p>
+          <p className="hero-subtitle text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
+            Professional video editing that brings your stories to life.
+            Cinematic quality, creative storytelling, and unparalleled attention
+            to detail.
+          </p>
 
-        <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            to="/work"
-            className="px-8 py-4 bg-primary text-white rounded-full font-semibold hover:bg-primary/80 transition-all duration-300 transform hover:scale-105 glow"
-          >
-            View Portfolio
-          </Link>
-          <Link
-            to="/contact"
-            className="px-8 py-4 border-2 border-primary text-primary rounded-full font-semibold hover:bg-primary/10 transition-all duration-300"
-          >
-            Get in Touch
-          </Link>
+          <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/work"
+              className="px-8 py-4 bg-primary text-white rounded-full font-semibold hover:bg-primary/80 transition-all duration-300 transform hover:scale-105 glow"
+            >
+              View Portfolio
+            </Link>
+            <Link
+              to="/contact"
+              className="px-8 py-4 border-2 border-primary text-primary rounded-full font-semibold hover:bg-primary/10 transition-all duration-300"
+            >
+              Get in Touch
+            </Link>
+            {featuredVideo && (
+              <button
+                onClick={handlePlayVideo}
+                className="px-8 py-4 border-2 border-white/30 text-white rounded-full font-semibold hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                <FiPlay /> Watch Showreel
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-primary rounded-full flex justify-center">
-          <div className="w-1 h-2 bg-primary rounded-full mt-2 animate-pulse"></div>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-primary rounded-full flex justify-center">
+            <div className="w-1 h-2 bg-primary rounded-full mt-2 animate-pulse"></div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        video={featuredVideo}
+      />
+    </>
   );
 };
 

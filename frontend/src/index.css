@@ -151,3 +151,43 @@ iframe[src*="youtube.com"] {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Video Thumbnail Styles */
+.video-thumbnail {
+  position: relative;
+  cursor: pointer;
+}
+
+.video-thumbnail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.video-thumbnail:hover::before {
+  opacity: 1;
+}
+
+/* Play button animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(28, 126, 251, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(28, 126, 251, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(28, 126, 251, 0);
+  }
+}
+
+.play-button {
+  animation: pulse 2s infinite;
+}
