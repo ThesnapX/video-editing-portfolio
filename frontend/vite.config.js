@@ -11,8 +11,11 @@ export default defineConfig({
         target: "https://video-editing-portfolio-m27y.onrender.com",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path,
       },
     },
+  },
+  build: {
+    outDir: "dist",
+    sourcemap: false,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../config/api";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -24,18 +24,26 @@ const Testimonials = () => {
       setLoading(true);
       setError(null);
 
-      const API_URL = import.meta.env.VITE_API_URL || "/api";
-      const response = await axios.get(`${API_URL}/testimonials`);
+      console.log("Fetching testimonials from API...");
+      const response = await api.get("/testimonials");
 
-      console.log("Testimonials API response:", response.data);
+      console.log("Testimonials response:", response.data);
 
+      let testimonialsData = [];
       if (response.data && Array.isArray(response.data)) {
-        setTestimonials(response.data);
+        testimonialsData = response.data;
+      } else if (
+        response.data &&
+        response.data.data &&
+        Array.isArray(response.data.data)
+      ) {
+        testimonialsData = response.data.data;
       } else if (response.data && typeof response.data === "object") {
-        setTestimonials(response.data.data || []);
-      } else {
-        setTestimonials([]);
+        testimonialsData =
+          Object.values(response.data).find((val) => Array.isArray(val)) || [];
       }
+
+      setTestimonials(testimonialsData);
     } catch (err) {
       console.error("Error fetching testimonials:", err);
       setError(err.message || "Failed to load testimonials");
@@ -104,11 +112,8 @@ const Testimonials = () => {
             {testimonials.map((testimonial, index) => (
               <div
                 key={testimonial._id || index}
-                className="group opacity-0 animate-fadeInUp"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  animationFillMode: "forwards",
-                }}
+                className="group"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="glass rounded-2xl p-8 hover:border-primary/30 transition-all duration-500 h-full">
                   {/* Quote Icon */}
@@ -149,22 +154,6 @@ const Testimonials = () => {
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeInUp {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
-      `}</style>
     </main>
   );
 };

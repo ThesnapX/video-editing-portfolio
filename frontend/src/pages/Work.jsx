@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../config/api";
 import VideoCard from "../components/Work/VideoCard";
 import VideoModal from "../components/Work/VideoModal";
 import gsap from "gsap";
@@ -31,16 +31,23 @@ const Work = () => {
       setLoading(true);
       setError(null);
 
-      const API_URL = import.meta.env.VITE_API_URL || "/api";
-      const response = await axios.get(`${API_URL}/work`);
+      console.log("Fetching works from API...");
+      const response = await api.get("/work");
 
-      console.log("Work API response:", response.data);
+      console.log("Works response:", response.data);
 
       let worksData = [];
       if (response.data && Array.isArray(response.data)) {
         worksData = response.data;
+      } else if (
+        response.data &&
+        response.data.data &&
+        Array.isArray(response.data.data)
+      ) {
+        worksData = response.data.data;
       } else if (response.data && typeof response.data === "object") {
-        worksData = response.data.data || [];
+        worksData =
+          Object.values(response.data).find((val) => Array.isArray(val)) || [];
       }
 
       setWorks(worksData);

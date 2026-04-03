@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../config/api";
 import ServiceCard from "../components/Services/ServiceCard";
 import ContactModal from "../components/Services/ContactModal";
 import gsap from "gsap";
@@ -23,20 +23,28 @@ const Services = () => {
       setLoading(true);
       setError(null);
 
-      const API_URL = import.meta.env.VITE_API_URL || "/api";
-      const response = await axios.get(`${API_URL}/services`);
+      console.log("Fetching services from API...");
+      const response = await api.get("/services");
 
-      console.log("Services API response:", response.data);
+      console.log("Services response:", response.data);
 
-      // Ensure we're setting an array
+      // Handle different response formats
+      let servicesData = [];
       if (response.data && Array.isArray(response.data)) {
-        setServices(response.data);
+        servicesData = response.data;
+      } else if (
+        response.data &&
+        response.data.data &&
+        Array.isArray(response.data.data)
+      ) {
+        servicesData = response.data.data;
       } else if (response.data && typeof response.data === "object") {
-        // If response is an object with data property
-        setServices(response.data.data || []);
-      } else {
-        setServices([]);
+        // Try to extract array from object
+        servicesData =
+          Object.values(response.data).find((val) => Array.isArray(val)) || [];
       }
+
+      setServices(servicesData);
     } catch (err) {
       console.error("Error fetching services:", err);
       setError(err.message || "Failed to load services");
