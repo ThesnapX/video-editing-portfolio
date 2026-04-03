@@ -9,6 +9,7 @@ import Testimonials from "./pages/Testimonials";
 import Contact from "./pages/Contact";
 import AdminLogin from "./components/Admin/Login";
 import AdminLayout from "./components/Admin/AdminLayout";
+import ServiceDetail from "./pages/ServiceDetail";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                   <Route path="/work" element={<Work />} />
                   <Route path="/testimonials" element={<Testimonials />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/services/:id" element={<ServiceDetail />} />
                 </Routes>
                 <Footer />
               </>

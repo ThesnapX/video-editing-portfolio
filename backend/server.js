@@ -43,6 +43,7 @@ app.use("/api/work", require("./routes/work"));
 app.use("/api/services", require("./routes/service"));
 app.use("/api/testimonials", require("./routes/testimonial"));
 app.use("/api/leads", require("./routes/lead"));
+app.use("/api/categories", require("./routes/categories"));
 
 // Health check route for Render
 app.get("/health", (req, res) => {

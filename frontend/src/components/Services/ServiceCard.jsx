@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -31,26 +32,38 @@ const ServiceCard = ({ service, onContact, index }) => {
       ref={cardRef}
       className="group glass rounded-2xl overflow-hidden hover:neon-border transition-all duration-300 transform hover:-translate-y-2"
     >
-      <div className="relative overflow-hidden aspect-video">
-        <img
-          src={service.thumbnail}
-          alt={service.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      </div>
+      <Link to={`/services/${service._id}`}>
+        <div className="relative overflow-hidden aspect-video">
+          <img
+            src={service.thumbnail}
+            alt={service.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+      </Link>
 
       <div className="p-6">
-        <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-          {service.title}
-        </h3>
-        <p className="text-gray-400 mb-6">{service.description}</p>
-        <button
-          onClick={onContact}
-          className="w-full py-3 bg-primary/10 text-primary rounded-full font-semibold hover:bg-primary hover:text-white transition-all duration-300"
-        >
-          Contact →
-        </button>
+        <Link to={`/services/${service._id}`}>
+          <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+            {service.title}
+          </h3>
+        </Link>
+        <p className="text-gray-400 mb-6 line-clamp-3">{service.description}</p>
+        <div className="flex gap-3">
+          <Link
+            to={`/services/${service._id}`}
+            className="flex-1 py-3 bg-primary/10 text-primary rounded-full font-semibold hover:bg-primary hover:text-white transition-all duration-300 text-center"
+          >
+            Learn More →
+          </Link>
+          <button
+            onClick={onContact}
+            className="flex-1 py-3 bg-gray-800/50 text-white rounded-full font-semibold hover:bg-primary/20 transition-all duration-300"
+          >
+            Contact
+          </button>
+        </div>
       </div>
     </div>
   );

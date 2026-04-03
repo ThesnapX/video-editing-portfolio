@@ -16,17 +16,29 @@ const workSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    category: {
+    categories: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    relatedServices: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Service",
+      },
+    ],
+    description: {
       type: String,
-      enum: [
-        "all",
-        "commercial",
-        "music-video",
-        "corporate",
-        "social-media",
-        "trailer",
-      ],
-      default: "all",
+      default: "",
+    },
+    duration: {
+      type: String,
+      default: "",
+    },
+    client: {
+      type: String,
+      default: "",
     },
   },
   {
