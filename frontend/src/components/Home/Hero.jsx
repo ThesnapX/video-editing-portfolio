@@ -1,154 +1,110 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
-import axios from "axios";
-import VideoModal from "../Work/VideoModal";
-import { FiPlay } from "react-icons/fi";
+import { FiArrowRight, FiPlay } from "react-icons/fi";
 
 const Hero = () => {
-  const heroRef = useRef(null);
-  const textRef = useRef(null);
-  const glowRef = useRef(null);
-  const [featuredVideo, setFeaturedVideo] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-
   useEffect(() => {
-    // Fetch a featured video for hero section
-    axios
-      .get("/api/work")
-      .then((res) => {
-        if (res.data.length > 0) {
-          setFeaturedVideo(res.data[0]);
-        }
-      })
-      .catch((err) => console.error("Error fetching featured video:", err));
-
     const tl = gsap.timeline();
 
     tl.fromTo(
-      ".hero-title",
-      { y: 100, opacity: 0, rotationX: -90 },
-      { y: 0, opacity: 1, rotationX: 0, duration: 1, ease: "back.out(1.2)" },
+      ".hero-badge",
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6 },
     )
       .fromTo(
-        ".hero-subtitle",
+        ".hero-title",
         { y: 50, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.5",
-      )
-      .fromTo(
-        ".hero-cta",
-        { scale: 0, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.2)" },
         "-=0.3",
       )
       .fromTo(
-        ".glow-effect",
-        { scale: 0.8, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 1,
-          repeat: -1,
-          yoyo: true,
-          ease: "power1.inOut",
-        },
+        ".hero-description",
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6 },
+        "-=0.4",
+      )
+      .fromTo(
+        ".hero-buttons",
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6 },
         "-=0.3",
+      )
+      .fromTo(
+        ".hero-stats",
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.1 },
+        "-=0.2",
       );
-
-    // Mouse move parallax effect
-    const handleMouseMove = (e) => {
-      const { clientX, clientY } = e;
-      const x = (clientX / window.innerWidth - 0.5) * 20;
-      const y = (clientY / window.innerHeight - 0.5) * 20;
-
-      gsap.to(glowRef.current, {
-        x: x,
-        y: y,
-        duration: 1,
-        ease: "power2.out",
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const handlePlayVideo = () => {
-    if (featuredVideo) {
-      setModalOpen(true);
-    }
-  };
-
   return (
-    <>
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      >
-        {/* Background Glow Effect */}
-        <div
-          ref={glowRef}
-          className="glow-effect absolute w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px]"
-          style={{
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        ></div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[80px]"></div>
+      </div>
 
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
-            <span className="text-white">Crafting Visual</span>
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center max-w-5xl mx-auto">
+          {/* Badge */}
+          <div className="hero-badge inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8">
+            <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+            <span className="text-sm text-gray-300">
+              Professional Video Editor
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1 className="hero-title text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+            Create Stunning
             <br />
-            <span className="text-primary glow-text">Masterpieces</span>
+            <span className="gradient-text">Visual Stories</span>
           </h1>
 
-          <p className="hero-subtitle text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
-            Professional video editing that brings your stories to life.
-            Cinematic quality, creative storytelling, and unparalleled attention
-            to detail.
+          {/* Description */}
+          <p className="hero-description text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Professional video editing that brings your ideas to life. Cinematic
+            quality, creative storytelling, and attention to detail.
           </p>
 
-          <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Buttons */}
+          <div className="hero-buttons flex flex-col sm:flex-row gap-5 justify-center mb-20">
             <Link
               to="/work"
-              className="px-8 py-4 bg-primary text-white rounded-full font-semibold hover:bg-primary/80 transition-all duration-300 transform hover:scale-105 glow"
+              className="group px-8 py-4 gradient-bg text-white rounded-xl font-semibold hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 text-lg"
             >
               View Portfolio
+              <FiArrowRight className="group-hover:translate-x-1 transition" />
             </Link>
             <Link
               to="/contact"
-              className="px-8 py-4 border-2 border-primary text-primary rounded-full font-semibold hover:bg-primary/10 transition-all duration-300"
+              className="px-8 py-4 glass border border-white/10 text-white rounded-xl font-semibold hover:bg-white/5 transition-all duration-300 text-lg"
             >
               Get in Touch
             </Link>
-            {featuredVideo && (
-              <button
-                onClick={handlePlayVideo}
-                className="px-8 py-4 border-2 border-white/30 text-white rounded-full font-semibold hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <FiPlay /> Watch Showreel
-              </button>
-            )}
+          </div>
+
+          {/* Stats - Only real data */}
+          <div className="hero-stats grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+            <div className="text-center">
+              <div className="text-4xl font-bold gradient-text">1+</div>
+              <div className="text-gray-500 mt-1">Year Experience</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold gradient-text">35+</div>
+              <div className="text-gray-500 mt-1">Happy Clients</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold gradient-text">100+</div>
+              <div className="text-gray-500 mt-1">Projects Done</div>
+            </div>
           </div>
         </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-primary rounded-full flex justify-center">
-            <div className="w-1 h-2 bg-primary rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Video Modal */}
-      <VideoModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        video={featuredVideo}
-      />
-    </>
+      </div>
+    </section>
   );
 };
 

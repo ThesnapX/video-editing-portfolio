@@ -7,14 +7,14 @@ import Services from "./pages/Services";
 import Work from "./pages/Work";
 import Testimonials from "./pages/Testimonials";
 import Contact from "./pages/Contact";
+import ServiceDetail from "./pages/ServiceDetail";
 import AdminLogin from "./components/Admin/Login";
 import AdminLayout from "./components/Admin/AdminLayout";
-import ServiceDetail from "./pages/ServiceDetail";
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-b from-darker to-dark">
+      <div className="min-h-screen bg-[#09090b]">
         <Routes>
           <Route path="/harry-admin-dashboard" element={<AdminLogin />} />
           <Route path="/admin/*" element={<AdminLayout />} />
@@ -26,10 +26,10 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/services" element={<Services />} />
+                  <Route path="/services/:id" element={<ServiceDetail />} />
                   <Route path="/work" element={<Work />} />
                   <Route path="/testimonials" element={<Testimonials />} />
                   <Route path="/contact" element={<Contact />} />
-                  <Route path="/services/:id" element={<ServiceDetail />} />
                 </Routes>
                 <Footer />
               </>

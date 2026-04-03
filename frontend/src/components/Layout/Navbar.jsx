@@ -34,14 +34,16 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? "glass py-4" : "bg-transparent py-6"
+      className={`fixed w-full z-50 transition-all duration-500 ${
+        scrolled ? "glass shadow-lg py-4" : "bg-transparent py-6"
       }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold">
-          <span className="text-primary glow-text">EDIT</span>
-          <span className="text-white">FLOW</span>
+        <Link to="/" className="text-2xl font-bold group">
+          <span className="gradient-text">EDIT</span>
+          <span className="text-white group-hover:text-primary transition">
+            FLOW
+          </span>
         </Link>
 
         {/* Desktop Menu */}
@@ -50,21 +52,33 @@ const Navbar = () => {
             <Link
               key={link.path}
               to={link.path}
-              className={`nav-link relative text-lg transition-colors hover:text-primary ${
-                location.pathname === link.path ? "text-primary" : "text-white"
+              className={`nav-link relative text-lg transition-all duration-300 hover:text-primary ${
+                location.pathname === link.path
+                  ? "text-primary"
+                  : "text-white/80"
               }`}
             >
               {link.label}
               {location.pathname === link.path && (
-                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary glow"></span>
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 gradient-bg rounded-full"></span>
               )}
             </Link>
           ))}
         </div>
 
+        {/* CTA Button */}
+        <div className="hidden md:block">
+          <Link
+            to="/contact"
+            className="px-6 py-2 gradient-bg text-white rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
+          >
+            Start Project
+          </Link>
+        </div>
+
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-2xl"
+          className="md:hidden text-2xl text-white"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <FiX /> : <FiMenu />}
@@ -80,13 +94,22 @@ const Navbar = () => {
                 className={`block px-6 py-3 text-lg transition-colors hover:text-primary ${
                   location.pathname === link.path
                     ? "text-primary"
-                    : "text-white"
+                    : "text-white/80"
                 }`}
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
+            <div className="px-6 pt-4">
+              <Link
+                to="/contact"
+                className="block text-center px-6 py-3 gradient-bg text-white rounded-full font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                Start Project
+              </Link>
+            </div>
           </div>
         )}
       </div>

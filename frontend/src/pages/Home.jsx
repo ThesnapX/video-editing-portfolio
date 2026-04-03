@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import Hero from "../components/Home/Hero";
 import FeaturedWork from "../components/Home/FeaturedWork";
 import AboutMe from "../components/Home/AboutMe";
-import BentoGrid from "../components/Home/BentoGrid";
-import Skills from "../components/Home/Skills";
+import ServicesGrid from "../components/Home/ServicesGrid";
 import TestimonialsPreview from "../components/Home/TestimonialsPreview";
 import CTA from "../components/Home/CTA";
 import gsap from "gsap";
@@ -15,17 +14,17 @@ const Home = () => {
   useEffect(() => {
     // Smooth scroll animation for sections
     const sections = document.querySelectorAll("section");
-    sections.forEach((section, i) => {
+    sections.forEach((section) => {
       gsap.fromTo(
         section,
-        { opacity: 0, y: 50 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
           duration: 1,
           scrollTrigger: {
             trigger: section,
-            start: "top 80%",
+            start: "top 85%",
             end: "bottom 20%",
             toggleActions: "play none none reverse",
           },
@@ -35,12 +34,11 @@ const Home = () => {
   }, []);
 
   return (
-    <main className="pt-20">
+    <main>
       <Hero />
       <FeaturedWork />
       <AboutMe />
-      <BentoGrid />
-      <Skills />
+      <ServicesGrid />
       <TestimonialsPreview />
       <CTA />
     </main>

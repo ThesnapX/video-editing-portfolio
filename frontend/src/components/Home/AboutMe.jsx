@@ -1,22 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { FiCheck } from "react-icons/fi";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const AboutMe = () => {
-  const aboutRef = useRef(null);
+  const skills = [
+    "Adobe Premiere Pro",
+    "Adobe After Effects",
+    "Adobe Photoshop",
+    "Figma",
+    "Motion Graphics (Learning)",
+    "Video Editing",
+    "Poster Designing",
+    "Thumbnail Design",
+    "YouTube SEO",
+  ];
 
   useEffect(() => {
     gsap.fromTo(
-      ".about-text",
-      { x: -100, opacity: 0 },
+      ".about-image",
+      { x: -50, opacity: 0 },
       {
         x: 0,
         opacity: 1,
         duration: 1,
         scrollTrigger: {
-          trigger: aboutRef.current,
+          trigger: ".about-section",
           start: "top 70%",
           toggleActions: "play none none reverse",
         },
@@ -24,14 +35,14 @@ const AboutMe = () => {
     );
 
     gsap.fromTo(
-      ".about-stats",
-      { x: 100, opacity: 0 },
+      ".about-content",
+      { x: 50, opacity: 0 },
       {
         x: 0,
         opacity: 1,
         duration: 1,
         scrollTrigger: {
-          trigger: aboutRef.current,
+          trigger: ".about-section",
           start: "top 70%",
           toggleActions: "play none none reverse",
         },
@@ -40,52 +51,69 @@ const AboutMe = () => {
   }, []);
 
   return (
-    <section ref={aboutRef} className="py-24">
+    <section className="about-section py-32 relative">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="about-text">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              About <span className="text-primary">Me</span>
-            </h2>
-            <p className="text-gray-300 text-lg mb-6">
-              I'm a passionate video editor with over 5 years of experience in
-              creating compelling visual stories. From commercial ads to music
-              videos, I bring creativity and technical expertise to every
-              project.
-            </p>
-            <p className="text-gray-300 text-lg mb-8">
-              My approach combines artistic vision with modern editing
-              techniques, ensuring each video not only meets but exceeds client
-              expectations. I believe in the power of storytelling and strive to
-              create content that resonates with audiences.
-            </p>
-            <div className="flex space-x-4">
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-primary text-xl">🎬</span>
-              </div>
-              <div>
-                <h4 className="font-semibold">500+ Projects Completed</h4>
-                <p className="text-gray-400">Happy clients worldwide</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left side - Stats Card */}
+          <div className="about-image">
+            <div className="glass rounded-3xl p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+              <h3 className="text-3xl font-bold mb-8">Quick Stats</h3>
+              <div className="space-y-6">
+                <div>
+                  <div className="text-4xl font-bold gradient-text">
+                    1+ Year
+                  </div>
+                  <div className="text-gray-400 mt-1">
+                    Professional Experience
+                  </div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold gradient-text">
+                    35+ Clients
+                  </div>
+                  <div className="text-gray-400 mt-1">Satisfied Customers</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold gradient-text">
+                    100+ Projects
+                  </div>
+                  <div className="text-gray-400 mt-1">
+                    Successfully Completed
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="about-stats grid grid-cols-2 gap-6">
-            <div className="glass p-6 rounded-xl text-center">
-              <div className="text-4xl font-bold text-primary mb-2">5+</div>
-              <div className="text-gray-300">Years Experience</div>
-            </div>
-            <div className="glass p-6 rounded-xl text-center">
-              <div className="text-4xl font-bold text-primary mb-2">200+</div>
-              <div className="text-gray-300">Music Videos</div>
-            </div>
-            <div className="glass p-6 rounded-xl text-center">
-              <div className="text-4xl font-bold text-primary mb-2">150+</div>
-              <div className="text-gray-300">Commercial Ads</div>
-            </div>
-            <div className="glass p-6 rounded-xl text-center">
-              <div className="text-4xl font-bold text-primary mb-2">50+</div>
-              <div className="text-gray-300">Awards Won</div>
+          {/* Right side - Content */}
+          <div className="about-content">
+            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+              About <span className="gradient-text">Me</span>
+            </h2>
+            <p className="text-lg text-gray-400 mb-6 leading-relaxed">
+              I'm a passionate video editor dedicated to creating compelling
+              visual stories. With over a year of hands-on experience, I've
+              helped 35+ clients bring their visions to life through
+              professional video editing and motion design.
+            </p>
+            <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+              My approach combines technical expertise with creative
+              storytelling, ensuring every project stands out and resonates with
+              the target audience.
+            </p>
+
+            <h3 className="text-2xl font-bold mb-4">Skills & Expertise</h3>
+            <div className="flex flex-wrap gap-3">
+              {skills.map((skill, index) => (
+                <span
+                  key={index}
+                  className="flex items-center gap-2 px-4 py-2 glass rounded-full text-sm"
+                >
+                  <FiCheck className="text-primary text-sm" />
+                  {skill}
+                </span>
+              ))}
             </div>
           </div>
         </div>

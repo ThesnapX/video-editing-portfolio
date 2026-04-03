@@ -1,193 +1,81 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1c7efb;
-  --color-dark: #0a0a0f;
-  --color-darker: #050507;
-  --color-gray-800: #1f1f2e;
-  --color-gray-700: #2a2a3b;
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #818cf8;
+  --color-secondary: #06b6d4;
+  --color-accent: #8b5cf6;
+  --color-dark: #09090b;
+  --color-darker: #050505;
+  --color-card: #18181b;
 }
 
 @layer base {
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
   html {
     @apply scroll-smooth;
   }
 
   body {
-    @apply bg-dark text-white font-sans antialiased;
+    @apply bg-[#09090b] text-white font-sans antialiased;
   }
 }
 
 @layer utilities {
-  .glow {
-    box-shadow: 0 0 20px rgba(28, 126, 251, 0.3);
+  .gradient-bg {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
   }
 
-  .glow-text {
-    text-shadow: 0 0 10px rgba(28, 126, 251, 0.5);
+  .gradient-text {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .glass {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(24, 24, 27, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+  }
+
+  .glass-white {
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .neon-border {
-    border: 1px solid var(--color-primary);
-    box-shadow: 0 0 10px rgba(28, 126, 251, 0.3);
+  .glow {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
   }
-}
 
-/* Video Player Custom Styles */
-.video-container {
-  position: relative;
-  background: #000;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.video-container iframe,
-.video-container video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 16 / 9;
-}
-
-/* Custom Range Slider for Video Progress */
-input[type="range"] {
-  -webkit-appearance: none;
-  background: transparent;
-}
-
-input[type="range"]:focus {
-  outline: none;
-}
-
-input[type="range"]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 4px;
-  background: #4b5563;
-  border-radius: 2px;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #1c7efb;
-  margin-top: -4px;
-  cursor: pointer;
-  box-shadow: 0 0 5px rgba(28, 126, 251, 0.5);
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
-input[type="range"]::-moz-range-track {
-  width: 100%;
-  height: 4px;
-  background: #4b5563;
-  border-radius: 2px;
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #1c7efb;
-  border: none;
-  cursor: pointer;
-}
-
-/* Video Modal Animation */
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
+  .glow-text {
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
   }
 }
 
-.video-modal-content {
-  animation: modalFadeIn 0.3s ease-out;
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
 }
 
-/* Hide YouTube branding */
-iframe[src*="youtube.com"] {
-  pointer-events: auto;
-}
-
-/* Custom scrollbar for modal */
-.modal-overlay::-webkit-scrollbar {
-  width: 8px;
-}
-
-.modal-overlay::-webkit-scrollbar-track {
-  background: #1a1a2e;
-}
-
-.modal-overlay::-webkit-scrollbar-thumb {
-  background: #1c7efb;
-  border-radius: 4px;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Video Thumbnail Styles */
-.video-thumbnail {
-  position: relative;
-  cursor: pointer;
-}
-
-.video-thumbnail::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 1;
-}
-
-.video-thumbnail:hover::before {
-  opacity: 1;
-}
-
-/* Play button animation */
-@keyframes pulse {
+@keyframes gradient {
   0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(28, 126, 251, 0.7);
+    background-position: 0% 50%;
   }
-  70% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(28, 126, 251, 0);
+  50% {
+    background-position: 100% 50%;
   }
   100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(28, 126, 251, 0);
+    background-position: 0% 50%;
   }
-}
-
-.play-button {
-  animation: pulse 2s infinite;
 }
