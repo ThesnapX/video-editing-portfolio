@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import AddWork from "./AddWork";
-import AddService from "./AddService";
-import AddTestimonial from "./AddTestimonial";
+import ManageWorks from "./ManageWorks";
+import ManageServices from "./ManageServices";
+import ManageTestimonials from "./ManageTestimonials";
 import LeadsManager from "./LeadsManager";
 import axios from "axios";
 
 const AdminLayout = () => {
-  const [activeTab, setActiveTab] = useState("leads");
+  const [activeTab, setActiveTab] = useState("works");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +17,6 @@ const AdminLayout = () => {
       return;
     }
 
-    // Verify token
     axios
       .get("/api/admin/verify", {
         headers: { Authorization: `Bearer ${token}` },
@@ -34,15 +33,15 @@ const AdminLayout = () => {
   };
 
   const tabs = [
+    { id: "works", label: "Manage Works", icon: "🎬" },
+    { id: "services", label: "Manage Services", icon: "⚙️" },
+    { id: "testimonials", label: "Manage Testimonials", icon: "⭐" },
     { id: "leads", label: "Leads Management", icon: "📊" },
-    { id: "work", label: "Add Work", icon: "🎬" },
-    { id: "service", label: "Add Service", icon: "⚙️" },
-    { id: "testimonial", label: "Add Testimonial", icon: "⭐" },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-darker to-dark">
-      <div className="glass border-b border-gray-800">
+      <div className="glass border-b border-gray-800 sticky top-0 z-20">
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center py-4">
             <h1 className="text-2xl font-bold">
@@ -61,7 +60,7 @@ const AdminLayout = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 font-semibold transition-all duration-300 ${
+                className={`px-6 py-3 font-semibold transition-all duration-300 whitespace-nowrap ${
                   activeTab === tab.id
                     ? "text-primary border-b-2 border-primary"
                     : "text-gray-400 hover:text-white"
@@ -76,10 +75,10 @@ const AdminLayout = () => {
       </div>
 
       <div className="container mx-auto px-6 py-8">
+        {activeTab === "works" && <ManageWorks />}
+        {activeTab === "services" && <ManageServices />}
+        {activeTab === "testimonials" && <ManageTestimonials />}
         {activeTab === "leads" && <LeadsManager />}
-        {activeTab === "work" && <AddWork />}
-        {activeTab === "service" && <AddService />}
-        {activeTab === "testimonial" && <AddTestimonial />}
       </div>
     </div>
   );

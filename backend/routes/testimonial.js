@@ -13,20 +13,22 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Add new testimonial (admin only)
-router.post("/", adminAuth, async (req, res) => {
+// Update testimonial (admin only)
+router.put("/:id", adminAuth, async (req, res) => {
   try {
     const { firstName, lastName, profession, message } = req.body;
 
-    const testimonial = new Testimonial({
-      firstName,
-      lastName,
-      profession,
-      message,
-    });
+    const testimonial = await Testimonial.findByIdAndUpdate(
+      req.params.id,
+      { firstName, lastName, profession, message },
+      { new: true },
+    );
 
-    await testimonial.save();
-    res.status(201).json(testimonial);
+    if (!testimonial) {
+      return res.status(404).json({ message: "Testimonial not found" });
+    }
+
+    res.json(testimonial);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

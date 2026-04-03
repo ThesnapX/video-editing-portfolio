@@ -1,52 +1,58 @@
 const mongoose = require("mongoose");
 
-const leadSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const leadSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
+    },
+    mobileNumber: {
+      type: String,
+      required: [true, "Mobile number is required"],
+      trim: true,
+    },
+    channelName: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    channelLink: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    message: {
+      type: String,
+      required: [true, "Message is required"],
+      trim: true,
+    },
+    serviceName: {
+      type: String,
+      required: [true, "Service name is required"],
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["new", "contact", "converted"],
+      default: "new",
+    },
+    finalPrice: {
+      type: Number,
+      default: null,
+    },
+    deadline: {
+      type: Date,
+      default: null,
+    },
+    projectDescription: {
+      type: String,
+      default: "",
+    },
   },
-  mobileNumber: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  channelName: {
-    type: String,
-    default: "",
-  },
-  channelLink: {
-    type: String,
-    default: "",
-  },
-  message: {
-    type: String,
-    required: true,
-  },
-  serviceName: {
-    type: String,
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ["new", "contact", "converted"],
-    default: "new",
-  },
-  // For converted clients
-  finalPrice: {
-    type: Number,
-    default: null,
-  },
-  deadline: {
-    type: Date,
-    default: null,
-  },
-  projectDescription: {
-    type: String,
-    default: "",
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+);
 
 module.exports = mongoose.model("Lead", leadSchema);

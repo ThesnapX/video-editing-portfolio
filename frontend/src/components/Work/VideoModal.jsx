@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { FiX } from "react-icons/fi";
-import ReactPlayer from "react-player";
 import gsap from "gsap";
 
 const VideoModal = ({ isOpen, onClose, video }) => {
@@ -18,40 +17,65 @@ const VideoModal = ({ isOpen, onClose, video }) => {
         { scale: 0.9, opacity: 0 },
         { scale: 1, opacity: 1, duration: 0.3, ease: "back.out" },
       );
+
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = "hidden";
     }
 
-    return () => window.removeEventListener("keydown", handleEsc);
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "unset";
+    };
   }, [isOpen, onClose]);
+
+  const extractVideoId = (url) => {
+    const match = url.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/,
+    );
+    return match ? match[1] : null;
+  };
 
   if (!isOpen || !video) return null;
 
+  const videoId = extractVideoId(video.videoUrl);
+
+  // YouTube embed URL with NO branding, NO recommendations, minimal UI
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&theme=dark&controls=1&fs=1&playsinline=1&disablekb=0&cc_load_policy=0`;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
-      <div className="video-modal-content relative w-full max-w-4xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <div
+        className="video-modal-content relative w-full max-w-5xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute -top-12 right-0 text-white hover:text-primary text-2xl"
+          className="absolute -top-12 right-0 text-white hover:text-primary transition-colors text-2xl z-10"
         >
           <FiX />
         </button>
 
-        <div className="aspect-video rounded-xl overflow-hidden">
-          <ReactPlayer
-            url={video.videoUrl}
-            width="100%"
-            height="100%"
-            controls
-            playing
-            config={{
-              youtube: {
-                playerVars: { modestbranding: 1, rel: 0 },
-              },
-            }}
-          />
+        {/* Video Container */}
+        <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl">
+          <div className="relative aspect-video">
+            <iframe
+              src={embedUrl}
+              title={video.title}
+              className="absolute inset-0 w-full h-full"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowFullScreen
+            />
+          </div>
         </div>
 
+        {/* Only keyboard hint - no duplicate title */}
         <div className="mt-4 text-center">
-          <h3 className="text-2xl font-bold">{video.title}</h3>
+          <p className="text-gray-500 text-sm">Press ESC to close</p>
         </div>
       </div>
     </div>

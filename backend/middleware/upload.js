@@ -1,38 +1,46 @@
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("../config/cloudinary");
+const path = require("path");
+const fs = require("fs");
 
-// Configure Cloudinary storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "video-editor-portfolio",
-    format: async (req, file) => {
-      // Check file type
-      const ext = file.mimetype.split("/")[1];
-      return ext === "jpeg" ? "jpg" : ext;
-    },
-    public_id: (req, file) => {
-      const timestamp = Date.now();
-      const random = Math.floor(Math.random() * 10000);
-      return `service_${timestamp}_${random}`;
-    },
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log("📁 Uploads directory created at:", uploadDir);
+}
+
+// Configure local storage (simpler, no Cloudinary for now)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    // Create unique filename
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, "service-" + uniqueSuffix + ext);
   },
 });
 
-// File filter to only allow images
+// File filter
 const fileFilter = (req, file, cb) => {
-  const allowedMimes = [
+  const allowedTypes = [
     "image/jpeg",
     "image/jpg",
     "image/png",
     "image/webp",
     "image/gif",
   ];
-  if (allowedMimes.includes(file.mimetype)) {
+
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only image files are allowed!"), false);
+    cb(
+      new Error(
+        "Invalid file type. Only JPEG, PNG, WEBP, and GIF are allowed.",
+      ),
+      false,
+    );
   }
 };
 

@@ -13,6 +13,7 @@ const Work = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const categories = [
     { id: "all", label: "All Work" },
@@ -24,30 +25,20 @@ const Work = () => {
   ];
 
   useEffect(() => {
-    axios
-      .get("/api/work")
-      .then((res) => {
-        setWorks(res.data);
-        setFilteredWorks(res.data);
-      })
-      .catch((err) => console.error("Error fetching works:", err));
-
-    // Animation for banner
-    gsap.fromTo(
-      ".work-banner",
-      { opacity: 0, y: -50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: ".work-banner",
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      },
-    );
+    fetchWorks();
   }, []);
+
+  const fetchWorks = async () => {
+    try {
+      const res = await axios.get("/api/work");
+      setWorks(res.data);
+      setFilteredWorks(res.data);
+    } catch (err) {
+      console.error("Error fetching works:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (activeCategory === "all") {
@@ -63,6 +54,14 @@ const Work = () => {
     setSelectedVideo(video);
     setModalOpen(true);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-primary text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <main className="pt-20">
