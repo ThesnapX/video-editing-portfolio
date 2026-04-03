@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -14,69 +15,117 @@ const Testimonials = () => {
       .then((res) => {
         setTestimonials(res.data);
       })
-      .catch((err) => console.error("Error fetching testimonials:", err));
+      .catch((err) => console.error("Error fetching testimonials:", err))
+      .finally(() => setLoading(false));
 
-    gsap.utils.toArray(".testimonial-card").forEach((card, i) => {
-      gsap.fromTo(
-        card,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          delay: i * 0.1,
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
-    });
+    gsap.fromTo(
+      ".testimonials-header",
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8 },
+    );
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-primary text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <main className="pt-20">
-      <div className="bg-gradient-to-r from-primary/10 to-transparent py-20">
-        <div className="container mx-auto px-6 text-center">
+      {/* Header */}
+      <div className="testimonials-header relative py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-[120px]"></div>
+        </div>
+
+        <div className="container mx-auto px-6 text-center relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            Client <span className="text-primary">Testimonials</span>
+            Client <span className="gradient-text">Testimonials</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            What my clients say about working with me
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            What my amazing clients have to say about working with me
           </p>
         </div>
       </div>
 
+      {/* Testimonials Grid */}
       <div className="container mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {testimonials.map((testimonial, index) => (
             <div
               key={testimonial._id}
-              className="testimonial-card glass p-8 rounded-2xl hover:neon-border transition-all duration-300"
+              className="group opacity-0 animate-fadeInUp"
+              style={{
+                animationDelay: `${index * 0.1}s`,
+                animationFillMode: "forwards",
+              }}
             >
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-2xl font-bold">
-                  {testimonial.firstName[0]}
-                  {testimonial.lastName[0]}
+              <div className="glass rounded-2xl p-8 hover:border-primary/30 transition-all duration-500 h-full">
+                {/* Quote Icon */}
+                <div className="mb-6">
+                  <svg
+                    className="w-14 h-14 text-primary/30"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
                 </div>
-                <div className="ml-4">
-                  <h4 className="font-bold text-lg">
-                    {testimonial.firstName} {testimonial.lastName}
-                  </h4>
-                  <p className="text-gray-400 text-sm">
-                    {testimonial.profession}
-                  </p>
+
+                {/* Message */}
+                <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                  "{testimonial.message}"
+                </p>
+
+                {/* Divider */}
+                <div className="w-20 h-0.5 gradient-bg mb-6"></div>
+
+                {/* Client Info */}
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-xl">
+                    {testimonial.firstName[0]}
+                    {testimonial.lastName[0]}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xl">
+                      {testimonial.firstName} {testimonial.lastName}
+                    </h3>
+                    <p className="text-gray-400">{testimonial.profession}</p>
+                  </div>
                 </div>
               </div>
-              <p className="text-gray-300 italic leading-relaxed">
-                "{testimonial.message}"
-              </p>
-              <div className="mt-4 text-primary">{"★".repeat(5)}</div>
             </div>
           ))}
         </div>
+
+        {testimonials.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-gray-400 text-lg">
+              No testimonials yet. Check back soon!
+            </p>
+          </div>
+        )}
       </div>
+
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+      `}</style>
     </main>
   );
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { FiArrowRight } from "react-icons/fi";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,7 +12,7 @@ const ServiceCard = ({ service, onContact, index }) => {
   useEffect(() => {
     gsap.fromTo(
       cardRef.current,
-      { opacity: 0, y: 50, scale: 0.9 },
+      { opacity: 0, y: 50, scale: 0.95 },
       {
         opacity: 1,
         y: 0,
@@ -28,41 +29,44 @@ const ServiceCard = ({ service, onContact, index }) => {
   }, [index]);
 
   return (
-    <div
-      ref={cardRef}
-      className="group glass rounded-2xl overflow-hidden hover:neon-border transition-all duration-300 transform hover:-translate-y-2"
-    >
-      <Link to={`/services/${service._id}`}>
-        <div className="relative overflow-hidden aspect-video">
-          <img
-            src={service.thumbnail}
-            alt={service.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        </div>
-      </Link>
-
-      <div className="p-6">
+    <div ref={cardRef} className="group">
+      <div className="glass rounded-2xl overflow-hidden hover:border-primary/30 transition-all duration-500 h-full flex flex-col">
         <Link to={`/services/${service._id}`}>
-          <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-            {service.title}
-          </h3>
+          <div className="relative overflow-hidden h-56">
+            <img
+              src={service.thumbnail}
+              alt={service.title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          </div>
         </Link>
-        <p className="text-gray-400 mb-6 line-clamp-3">{service.description}</p>
-        <div className="flex gap-3">
-          <Link
-            to={`/services/${service._id}`}
-            className="flex-1 py-3 bg-primary/10 text-primary rounded-full font-semibold hover:bg-primary hover:text-white transition-all duration-300 text-center"
-          >
-            Learn More →
+
+        <div className="p-6 flex-grow flex flex-col">
+          <Link to={`/services/${service._id}`}>
+            <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
+              {service.title}
+            </h3>
           </Link>
-          <button
-            onClick={onContact}
-            className="flex-1 py-3 bg-gray-800/50 text-white rounded-full font-semibold hover:bg-primary/20 transition-all duration-300"
-          >
-            Contact
-          </button>
+          <p className="text-gray-400 mb-6 leading-relaxed flex-grow line-clamp-3">
+            {service.description}
+          </p>
+
+          <div className="flex gap-3 mt-auto">
+            <Link
+              to={`/services/${service._id}`}
+              className="flex-1 py-3 glass text-white rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 text-center flex items-center justify-center gap-2 group"
+            >
+              Learn More
+              <FiArrowRight className="group-hover:translate-x-1 transition" />
+            </Link>
+            <button
+              onClick={onContact}
+              className="flex-1 py-3 gradient-bg text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
+            >
+              Contact
+            </button>
+          </div>
         </div>
       </div>
     </div>

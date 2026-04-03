@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { FiPlay } from "react-icons/fi";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,27 +27,42 @@ const VideoCard = ({ work, onClick, index }) => {
   }, [index]);
 
   return (
-    <div
-      ref={cardRef}
-      onClick={onClick}
-      className="group cursor-pointer rounded-xl overflow-hidden glass hover:neon-border transition-all duration-300 transform hover:-translate-y-2"
-    >
-      <div className="relative overflow-hidden aspect-video">
-        <img
-          src={work.thumbnail}
-          alt={work.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="w-16 h-16 rounded-full bg-primary/80 flex items-center justify-center">
-            <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-white border-b-8 border-b-transparent ml-1"></div>
+    <div ref={cardRef} onClick={onClick} className="group cursor-pointer">
+      <div className="glass rounded-2xl overflow-hidden hover:border-primary/30 transition-all duration-500">
+        <div className="relative overflow-hidden aspect-video">
+          <img
+            src={work.thumbnail}
+            alt={work.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
+            <div className="transform scale-90 group-hover:scale-100 transition duration-500">
+              <div className="w-16 h-16 rounded-full gradient-bg flex items-center justify-center hover:scale-110 transition">
+                <FiPlay className="text-white text-2xl ml-1" />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
-          {work.title}
-        </h3>
+        <div className="p-5">
+          <h3 className="text-xl font-semibold group-hover:text-primary transition-colors duration-300">
+            {work.title}
+          </h3>
+          {work.client && (
+            <p className="text-gray-400 text-sm mt-1">Client: {work.client}</p>
+          )}
+          {work.categories && work.categories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {work.categories.slice(0, 2).map((cat) => (
+                <span
+                  key={cat}
+                  className="text-xs px-2 py-1 bg-primary/20 rounded-full"
+                >
+                  {cat}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
